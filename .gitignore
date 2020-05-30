@@ -1,0 +1,6 @@
+node_modules
+dist
+*.code-workspace
+*.swp
+*.swo
+.DS_Store

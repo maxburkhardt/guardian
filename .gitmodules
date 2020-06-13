@@ -1,0 +1,3 @@
+[submodule "guardian-assets"]
+	path = guardian-assets
+	url = git@github.com:maxburkhardt/guardian-assets.git

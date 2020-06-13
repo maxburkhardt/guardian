@@ -44,7 +44,7 @@ module.exports = {
                     to: path.resolve(__dirname, 'dist')
                 },
                 {
-                    from: path.resolve(__dirname, 'guardian-assets', '**', '*'),
+                    from: path.resolve(__dirname, 'guardian-assets', 'dev', '**', '*'),
                     to: path.resolve(__dirname, 'dist')
                 }
             ]

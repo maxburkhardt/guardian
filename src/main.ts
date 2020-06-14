@@ -1,5 +1,6 @@
 import * as Phaser from "phaser";
 import RobberScene from "./scenes/RobberScene"
+import TitleScene from "./scenes/TitleScene"
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
   title: "Sample",
@@ -7,8 +8,10 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
 
   scale: {
-    width: window.innerWidth,
-    height: window.innerHeight,
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: 1600,
+    height: 1600,
   },
 
   physics: {
@@ -20,7 +23,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
 
   parent: "game",
   backgroundColor: "#000000",
-  scene: RobberScene,
+  scene: [TitleScene, RobberScene],
 };
 
 export const game = new Phaser.Game(gameConfig);

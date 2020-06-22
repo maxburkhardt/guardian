@@ -37,10 +37,13 @@ export default class RobberScene extends Phaser.Scene {
 
     if (cursorKeys.right.isDown) {
       this.robber.arcadeBody().setVelocityX(500);
+      this.robber.playRunRight();
     } else if (cursorKeys.left.isDown) {
       this.robber.arcadeBody().setVelocityX(-500);
+      this.robber.playRunLeft();
     } else {
       this.robber.arcadeBody().setVelocityX(0);
+      this.robber.playIdle();
     }
   }
 }

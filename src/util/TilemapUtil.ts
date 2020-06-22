@@ -7,11 +7,11 @@ export function preloadTilemap(
 ): void {
   scene.load.image(
     generateTilesetKey(tilesetName),
-    `/guardian-assets/dev/environment/${tilesetName}.png`
+    `/guardian-assets/dist/environment/${tilesetName}.png`
   );
   scene.load.tilemapTiledJSON(
     generateTilemapKey(mapName),
-    `/guardian-assets/dev/maps/${mapName}.json`
+    `/guardian-assets/dist/maps/${mapName}.json`
   );
 }
 

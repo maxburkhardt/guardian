@@ -26,12 +26,10 @@ export function createTilemap(
     tiledTilesetName,
     generateTilesetKey(loadedTilesetName),
     16,
-    16,
-    1,
-    2
+    16
   );
   map.createStaticLayer("Ground", tileset);
-  map.createStaticLayer("Tile Layer 3", tileset);
+  map.createStaticLayer("Cliffs", tileset);
   map.createStaticLayer("Trees", tileset);
   return map;
 }

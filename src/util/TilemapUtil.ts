@@ -24,7 +24,11 @@ export function createTilemap(
   const map = scene.make.tilemap({ key: generateTilemapKey(mapName) });
   const tileset = map.addTilesetImage(
     tiledTilesetName,
-    generateTilesetKey(loadedTilesetName)
+    generateTilesetKey(loadedTilesetName),
+    16,
+    16,
+    1,
+    2
   );
   map.createStaticLayer("Ground", tileset);
   map.createStaticLayer("Tile Layer 3", tileset);

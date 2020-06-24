@@ -28,15 +28,38 @@ export default class Robber extends Phaser.Physics.Arcade.Sprite {
     return this.body as Phaser.Physics.Arcade.Body;
   }
 
-  public playRunLeft(): void {
+  public moveLeft(): void {
+    this.arcadeBody().setVelocityX(-500);
+    this.playRunLeft();
+  }
+
+  public moveRight(): void {
+    this.arcadeBody().setVelocityX(500);
+    this.playRunRight();
+  }
+
+  public moveUp(): void {
+    this.arcadeBody().setVelocityY(-500);
+  }
+
+  public moveDown(): void {
+    this.arcadeBody().setVelocityY(500);
+  }
+
+  public idle(): void {
+    this.arcadeBody().setVelocity(0, 0);
+    this.playIdle();
+  }
+
+  private playRunLeft(): void {
     this.anims.play(`${this.identity}_run_left`, true);
   }
 
-  public playRunRight(): void {
+  private playRunRight(): void {
     this.anims.play(`${this.identity}_run_right`, true);
   }
 
-  public playIdle(): void {
+  private playIdle(): void {
     this.anims.play(`${this.identity}_idle`, true);
   }
 

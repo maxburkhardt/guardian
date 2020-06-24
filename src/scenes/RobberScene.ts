@@ -26,24 +26,27 @@ export default class RobberScene extends Phaser.Scene {
 
   public update(): void {
     const cursorKeys = this.input.keyboard.createCursorKeys();
+    let horzMovement = true;
+    let vertMovement = true;
 
     if (cursorKeys.up.isDown) {
-      this.robber.arcadeBody().setVelocityY(-500);
+      this.robber.moveUp();
     } else if (cursorKeys.down.isDown) {
-      this.robber.arcadeBody().setVelocityY(500);
+      this.robber.moveDown();
     } else {
-      this.robber.arcadeBody().setVelocityY(0);
+      vertMovement = false;
     }
 
     if (cursorKeys.right.isDown) {
-      this.robber.arcadeBody().setVelocityX(500);
-      this.robber.playRunRight();
+      this.robber.moveRight();
     } else if (cursorKeys.left.isDown) {
-      this.robber.arcadeBody().setVelocityX(-500);
-      this.robber.playRunLeft();
+      this.robber.moveLeft();
     } else {
-      this.robber.arcadeBody().setVelocityX(0);
-      this.robber.playIdle();
+      horzMovement = false;
+    }
+
+    if (!horzMovement && !vertMovement) {
+      this.robber.idle();
     }
   }
 }

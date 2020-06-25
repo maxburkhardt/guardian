@@ -33,7 +33,11 @@ export default class RobberScene extends Phaser.Scene {
       mapData.collideableLayers
     );
     this.guardian1 = new Guardian(
-      this, 200, 200, "YZAZAMAEL", mapData.collideableLayers
+      this,
+      200,
+      200,
+      "YZAZAMAEL",
+      mapData.collideableLayers
     );
 
     const camera = this.cameras.main;

@@ -1,9 +1,11 @@
 import * as Phaser from "phaser";
 import { preloadTilemap, createTilemap } from "../util/TilemapUtil";
 import Robber, { preloadRobbers } from "../entities/Robber";
+import Guardian, { preloadGuardians } from "../entities/Guardian";
 
 export default class RobberScene extends Phaser.Scene {
   private robber: Robber;
+  private guardian1: Guardian;
 
   constructor() {
     super({ key: "RobberScene" });
@@ -12,6 +14,7 @@ export default class RobberScene extends Phaser.Scene {
   public preload(): void {
     preloadTilemap(this, "gentle_forest", "devmap2");
     preloadRobbers(this);
+    preloadGuardians(this);
   }
 
   public create(): void {
@@ -29,7 +32,9 @@ export default class RobberScene extends Phaser.Scene {
       "DISCORDIA",
       mapData.collideableLayers
     );
-    this.add.existing(this.robber);
+    this.guardian1 = new Guardian(
+      this, 200, 200, "YZAZAMAEL", mapData.collideableLayers
+    );
 
     const camera = this.cameras.main;
     camera.startFollow(this.robber);

@@ -23,6 +23,7 @@ export default class Character extends Phaser.Physics.Arcade.Sprite {
     }
     this.createAnimations(scene);
     this.playIdle();
+    scene.add.existing(this);
   }
 
   public arcadeBody(): Phaser.Physics.Arcade.Body {

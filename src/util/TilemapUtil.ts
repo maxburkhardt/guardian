@@ -1,5 +1,10 @@
 import * as Phaser from "phaser";
 
+export type TilemapData = {
+  map: Phaser.Tilemaps.Tilemap;
+  collideableLayers: Array<Phaser.Tilemaps.StaticTilemapLayer>;
+};
+
 export function preloadTilemap(
   scene: Phaser.Scene,
   tilesetName: string,
@@ -20,7 +25,7 @@ export function createTilemap(
   mapName: string,
   tiledTilesetName: string,
   loadedTilesetName: string
-): Phaser.Tilemaps.Tilemap {
+): TilemapData {
   const map = scene.make.tilemap({ key: generateTilemapKey(mapName) });
   const tileset = map.addTilesetImage(
     tiledTilesetName,
@@ -29,9 +34,14 @@ export function createTilemap(
     16
   );
   map.createStaticLayer("Ground", tileset);
-  map.createStaticLayer("Cliffs", tileset);
-  map.createStaticLayer("Trees", tileset);
-  return map;
+  const cliffs = map.createStaticLayer("Cliffs", tileset);
+  cliffs.setCollisionBetween(0, cliffs.tilesTotal, true);
+  const trees = map.createStaticLayer("Trees", tileset);
+  trees.setCollisionBetween(0, cliffs.tilesTotal, true);
+  return {
+    map: map,
+    collideableLayers: [cliffs, trees],
+  };
 }
 
 function generateTilesetKey(name: string): string {

@@ -15,9 +15,20 @@ export default class RobberScene extends Phaser.Scene {
   }
 
   public create(): void {
-    createTilemap(this, "devmap2", "Gentle Forest", "gentle_forest");
-    this.physics.world.setBounds(0, 0, 1600, 1600);
-    this.robber = new Robber(this, 400, 400, "DISCORDIA");
+    const mapData = createTilemap(
+      this,
+      "devmap2",
+      "Gentle Forest",
+      "gentle_forest"
+    );
+    this.physics.world.setBounds(0, 0, 800, 800);
+    this.robber = new Robber(
+      this,
+      400,
+      400,
+      "DISCORDIA",
+      mapData.collideableLayers
+    );
     this.add.existing(this.robber);
 
     const camera = this.cameras.main;

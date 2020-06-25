@@ -15,11 +15,23 @@ export function preloadRobbers(scene: Phaser.Scene): void {
 export default class Robber extends Phaser.Physics.Arcade.Sprite {
   private identity: string;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, identity: string) {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    identity: string,
+    collideableLayers: Array<Phaser.Tilemaps.StaticTilemapLayer>
+  ) {
     super(scene, x, y, ROBBER_SPRITE_KEYS[identity], "idle_1.png");
     this.identity = ROBBER_SPRITE_KEYS[identity];
     scene.physics.add.existing(this);
+    //this.setSize(44, 20);
+    this.body.setCircle(15, 42, 35);
+    //this.body.setOffset(30, 40);
     this.setCollideWorldBounds(true);
+    for (const layer of collideableLayers) {
+      scene.physics.add.collider(this, layer);
+    }
     this.createAnimations(scene);
     this.playIdle();
   }
@@ -30,12 +42,12 @@ export default class Robber extends Phaser.Physics.Arcade.Sprite {
 
   public moveLeft(): void {
     this.arcadeBody().setVelocityX(-500);
-    this.playRunLeft();
+    //this.playRunLeft();
   }
 
   public moveRight(): void {
     this.arcadeBody().setVelocityX(500);
-    this.playRunRight();
+    //this.playRunRight();
   }
 
   public moveUp(): void {

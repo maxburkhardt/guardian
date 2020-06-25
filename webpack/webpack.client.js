@@ -4,7 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: {
-    app: './src/main.ts',
+    app: './src/client.ts',
     vendors: ['phaser']
   },
 
@@ -26,25 +26,25 @@ module.exports = {
 
   output: {
     filename: 'app.bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, '..', 'dist')
   },
 
   mode: 'development',
 
   devServer: {
-    contentBase: path.resolve(__dirname, 'dist')
+    contentBase: path.resolve(__dirname, '..', 'dist')
   },
 
     plugins: [
         new CopyWebpackPlugin({
             patterns: [
                 {
-                    from: path.resolve(__dirname, 'index.html'),
-                    to: path.resolve(__dirname, 'dist')
+                    from: path.resolve(__dirname, '..', 'index.html'),
+                    to: path.resolve(__dirname, '..', 'dist')
                 },
                 {
-                    from: path.resolve(__dirname, 'guardian-assets', 'dist', '**', '*'),
-                    to: path.resolve(__dirname, 'dist')
+                    from: path.resolve(__dirname, '..', 'guardian-assets', 'dist', '**', '*'),
+                    to: path.resolve(__dirname, '..', 'dist')
                 }
             ]
         }),

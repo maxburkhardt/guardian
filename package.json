@@ -4,8 +4,10 @@
   "description": "Heart-pounding guarding action.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
-    "dev": "webpack-dev-server",
+    "client:build": "webpack --config webpack/webpack.client.js",
+    "client:dev": "webpack-dev-server --config webpack/webpack.client.js",
+    "server:build": "webpack --config webpack/webpack.server.js",
+    "server:dev": "webpack-dev-server --config webpack/webpack.server.js",
     "prettier": "prettier --write src/**/*.ts",
     "lint": "eslint --ext \".ts\" --ignore-path .gitignore src",
     "lintfix": "eslint --ext \".ts\" --ignore-path .gitignore --fix src"

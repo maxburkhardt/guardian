@@ -1,5 +1,6 @@
 import * as Phaser from "phaser";
 import Character from "./Character";
+import { getAssetPath } from "../util/AssetFinder";
 
 export const GUARDIAN_SPRITE_KEYS = {
   YZAZAMAEL: "guardian_yzazamael",
@@ -8,8 +9,8 @@ export const GUARDIAN_SPRITE_KEYS = {
 export function preloadGuardians(scene: Phaser.Scene): void {
   scene.load.multiatlas(
     GUARDIAN_SPRITE_KEYS.YZAZAMAEL,
-    "/guardian-assets/dist/characters/yzazamael.json",
-    "/guardian-assets/dist/characters"
+    getAssetPath("SPRITESHEET_YZAZAMAEL"),
+    getAssetPath("DIRECTORY_CHARACTERS")
   );
 }
 

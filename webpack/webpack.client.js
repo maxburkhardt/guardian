@@ -21,40 +21,41 @@ module.exports = {
   devtool: 'inline-source-map',
 
   resolve: {
-    extensions: [ '.ts', '.tsx', '.js' ]
+    extensions: ['.ts', '.tsx', '.js']
   },
 
   output: {
-    filename: 'app.bundle.js',
+    filename: 'client.bundle.js',
     path: path.resolve(__dirname, '..', 'dist')
   },
 
   mode: 'development',
 
   devServer: {
-    contentBase: path.resolve(__dirname, '..', 'dist')
+    contentBase: path.resolve(__dirname, '..', 'dist'),
+    port: 8080,
   },
 
-    plugins: [
-        new CopyWebpackPlugin({
-            patterns: [
-                {
-                    from: path.resolve(__dirname, '..', 'index.html'),
-                    to: path.resolve(__dirname, '..', 'dist')
-                },
-                {
-                    from: path.resolve(__dirname, '..', 'guardian-assets', 'dist', '**', '*'),
-                    to: path.resolve(__dirname, '..', 'dist')
-                }
-            ]
-        }),
-        new webpack.DefinePlugin({
-            'typeof CANVAS_RENDERER': JSON.stringify(true),
-            'typeof WEBGL_RENDERER': JSON.stringify(true)
-        }),
-    ],
+  plugins: [
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, '..', 'index.html'),
+          to: path.resolve(__dirname, '..', 'dist')
+        },
+        {
+          from: path.resolve(__dirname, '..', 'guardian-assets', 'dist', '**', '*'),
+          to: path.resolve(__dirname, '..', 'dist')
+        }
+      ]
+    }),
+    new webpack.DefinePlugin({
+      'typeof CANVAS_RENDERER': JSON.stringify(true),
+      'typeof WEBGL_RENDERER': JSON.stringify(true)
+    }),
+  ],
 
-    optimization: {
+  optimization: {
     splitChunks: {
       cacheGroups: {
         commons: {

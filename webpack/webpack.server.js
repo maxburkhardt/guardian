@@ -1,12 +1,16 @@
 const path = require('path');
 const webpack = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const nodeExternals = require('webpack-node-externals')
 
 module.exports = {
   entry: {
     app: './src/server.ts',
     vendors: ['phaser']
   },
+
+  target: 'node',
+
+  watch: true,
 
   module: {
     rules: [
@@ -21,40 +25,31 @@ module.exports = {
   devtool: 'inline-source-map',
 
   resolve: {
-    extensions: [ '.ts', '.tsx', '.js' ]
+    extensions: ['.ts', '.tsx', '.js']
   },
 
   output: {
-    filename: 'app.bundle.js',
+    filename: 'server.bundle.js',
     path: path.resolve(__dirname, '..', 'dist')
   },
 
   mode: 'development',
 
-  devServer: {
-    contentBase: path.resolve(__dirname, '..', 'dist')
-  },
+  plugins: [
+    new webpack.DefinePlugin({
+      'typeof CANVAS_RENDERER': JSON.stringify(true),
+      'typeof WEBGL_RENDERER': JSON.stringify(true)
+    }),
+    new webpack.HotModuleReplacementPlugin()
+  ],
 
-    plugins: [
-        new CopyWebpackPlugin({
-            patterns: [
-                {
-                    from: path.resolve(__dirname, '..', 'index.html'),
-                    to: path.resolve(__dirname, '..', 'dist')
-                },
-                {
-                    from: path.resolve(__dirname, '..', 'guardian-assets', 'dist', '**', '*'),
-                    to: path.resolve(__dirname, '..', 'dist')
-                }
-            ]
-        }),
-        new webpack.DefinePlugin({
-            'typeof CANVAS_RENDERER': JSON.stringify(true),
-            'typeof WEBGL_RENDERER': JSON.stringify(true)
-        }),
-    ],
+  externals: [
+    nodeExternals({
+      whitelist: ['webpack/hot/poll?100'],
+    }),
+  ],
 
-    optimization: {
+  optimization: {
     splitChunks: {
       cacheGroups: {
         commons: {

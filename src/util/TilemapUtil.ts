@@ -1,4 +1,5 @@
 import * as Phaser from "phaser";
+import { getAssetPath } from "./AssetFinder";
 
 export type TilemapData = {
   map: Phaser.Tilemaps.Tilemap;
@@ -12,11 +13,11 @@ export function preloadTilemap(
 ): void {
   scene.load.image(
     generateTilesetKey(tilesetName),
-    `/guardian-assets/dist/environment/${tilesetName}.png`
+    getAssetPath(`TILESET_${tilesetName}`)
   );
   scene.load.tilemapTiledJSON(
     generateTilemapKey(mapName),
-    `/guardian-assets/dist/maps/${mapName}.json`
+    getAssetPath(`MAP_${mapName}`)
   );
 }
 

@@ -1,5 +1,6 @@
 import * as Phaser from "phaser";
 import Character from "./Character";
+import { getAssetPath } from "../util/AssetFinder";
 
 export const ROBBER_SPRITE_KEYS = {
   DISCORDIA: "robber_discordia",
@@ -8,8 +9,8 @@ export const ROBBER_SPRITE_KEYS = {
 export function preloadRobbers(scene: Phaser.Scene): void {
   scene.load.multiatlas(
     ROBBER_SPRITE_KEYS.DISCORDIA,
-    "/guardian-assets/dist/characters/discordia.json",
-    "/guardian-assets/dist/characters"
+    getAssetPath("SPRITESHEET_DISCORDIA"),
+    getAssetPath("DIRECTORY_CHARACTERS")
   );
 }
 

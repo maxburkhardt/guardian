@@ -12,7 +12,7 @@ export default class RobberScene extends Phaser.Scene {
   }
 
   public preload(): void {
-    preloadTilemap(this, "gentle_forest", "devmap2");
+    preloadTilemap(this, "GENTLE_FOREST", "DEVMAP2");
     preloadRobbers(this);
     preloadGuardians(this);
   }
@@ -20,9 +20,9 @@ export default class RobberScene extends Phaser.Scene {
   public create(): void {
     const mapData = createTilemap(
       this,
-      "devmap2",
+      "DEVMAP2",
       "Gentle Forest",
-      "gentle_forest"
+      "GENTLE_FOREST"
     );
     this.physics.world.setBounds(0, 0, 800, 800);
     this.robber = new Robber(

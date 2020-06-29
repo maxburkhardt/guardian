@@ -1,6 +1,7 @@
 import * as Phaser from "phaser";
 import RobberScene from "./scenes/RobberScene";
 import TitleScene from "./scenes/TitleScene";
+import ConnectScene from "./scenes/ConnectScene";
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
   title: "Guardian",
@@ -21,7 +22,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
 
   parent: "game",
   backgroundColor: "#000000",
-  scene: [TitleScene, RobberScene],
+  scene: [TitleScene, ConnectScene, RobberScene],
 };
 
 export const game = new Phaser.Game(gameConfig);

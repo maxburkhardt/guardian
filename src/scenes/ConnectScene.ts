@@ -1,14 +1,13 @@
 import * as Phaser from "phaser";
-import InputUtil from "../util/InputUtil";
 import WebFontFile from "../util/WebFontFile";
+import geckos from "@geckos.io/client";
 import { getCameraCenter } from "../util/SceneUtil";
 
 export default class TitleScene extends Phaser.Scene {
-  private inputUtil: InputUtil;
   private text: Phaser.GameObjects.Text;
 
   constructor() {
-    super({ key: "TitleScene" });
+    super({ key: "ConnectScene" });
   }
 
   public preload(): void {
@@ -24,7 +23,6 @@ export default class TitleScene extends Phaser.Scene {
   }
 
   public create(): void {
-    this.inputUtil = new InputUtil(this);
     const titleStyle: Phaser.Types.GameObjects.Text.TextStyle = {
       fontFamily: "Metamorphous",
       fontSize: "64px",
@@ -33,14 +31,19 @@ export default class TitleScene extends Phaser.Scene {
     };
     const center = getCameraCenter(this);
     this.text = this.add
-      .text(center[0], center[1], "Guardians", titleStyle)
+      .text(center[0], center[1], "Connecting...", titleStyle)
       .setOrigin(0.5);
     this.scale.on("resize", this.recenter(this));
-  }
 
-  public update(): void {
-    if (this.inputUtil.continueIsDown()) {
-      this.scene.start("ConnectScene");
-    }
+    // Set up communications
+    const channel = geckos({ port: 9090 });
+    channel.onConnect((error) => {
+      if (error) {
+        console.error(error.message);
+      }
+      channel.on("ready", () => {
+        this.scene.start("RobberScene", { channel: channel });
+      });
+    });
   }
 }

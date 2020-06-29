@@ -2,13 +2,23 @@ import * as Phaser from "phaser";
 import { preloadTilemap, createTilemap } from "../util/TilemapUtil";
 import Robber, { preloadRobbers } from "../entities/Robber";
 import Guardian, { preloadGuardians } from "../entities/Guardian";
+import { ClientChannel } from "@geckos.io/client";
+
+export type SceneArgs = {
+  channel: ClientChannel;
+};
 
 export default class RobberScene extends Phaser.Scene {
   private robber: Robber;
   private guardian1: Guardian;
+  private channel: ClientChannel;
 
   constructor() {
     super({ key: "RobberScene" });
+  }
+
+  public init(args: SceneArgs): void {
+    this.channel = args.channel;
   }
 
   public preload(): void {

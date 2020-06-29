@@ -1,5 +1,6 @@
 import * as Phaser from "phaser";
 import { getAssetPath } from "./AssetFinder";
+import { MapInfo } from "./StateManagement";
 
 export type TilemapData = {
   map: Phaser.Tilemaps.Tilemap;
@@ -43,6 +44,13 @@ export function createTilemap(
     map: map,
     collideableLayers: [cliffs, trees],
   };
+}
+
+export function getMapInfo(mapName: string): MapInfo {
+  const mapData: { [key: string]: MapInfo } = {
+    DEVMAP2: { name: "DEVMAP2", numItems: 5 },
+  };
+  return mapData[mapName];
 }
 
 function generateTilesetKey(name: string): string {

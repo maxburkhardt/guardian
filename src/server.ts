@@ -7,6 +7,7 @@ import ServerLobbyScene from "./scenes/ServerLobbyScene";
 import NetworkedGame from "./extensions/NetworkedGame";
 import { generateNewState, createSnapshot } from "./util/StateManagement";
 import { Vault } from "@geckos.io/snapshot-interpolation";
+import { SERVER_FPS, SERVER_PORT } from "./config/Server";
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
   title: "Guardian Server",
@@ -16,7 +17,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   physics: { default: "arcade" },
-  fps: { target: 30 }, // TODO tune based on performance needs
+  fps: { target: SERVER_FPS }, // TODO tune based on performance needs
   audio: { noAudio: true },
   parent: "game",
   scene: ServerLobbyScene,
@@ -25,7 +26,6 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
 const app = express();
 app.use(compression());
 const server = http.createServer(app);
-const SERVER_PORT = 9090;
 // Make a new game
 const newState = generateNewState("DEVMAP2");
 const stateVault = new Vault();

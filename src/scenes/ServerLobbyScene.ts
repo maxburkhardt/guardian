@@ -25,11 +25,8 @@ export default class ServerScene extends NetworkedScene {
       channel.on(SIGNALS.LOGIN, (data: Data) => {
         if (typeof data === "string") {
           this.game.channels[data] = channel;
-          console.log(`Authenticated a channel with session ID ${data}`)
-          channel.emit(
-            SIGNALS.STATE_UPDATE,
-            compressSnapshot(this.game.stateVault.get())
-          );
+          console.log(`Authenticated a channel with session ID ${data}`);
+          channel.raw.emit(compressSnapshot(this.game.stateVault.get()));
         } else {
           console.warn(
             `Unexpected data type found for login message: ${typeof data}`

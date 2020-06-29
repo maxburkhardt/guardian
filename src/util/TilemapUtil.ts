@@ -1,6 +1,17 @@
 import * as Phaser from "phaser";
 import { getAssetPath } from "./AssetFinder";
 
+const MAP_DATA: { [key: string]: MapInfo } = {
+  DEVMAP2: {
+    name: "DEVMAP2",
+    totalItems: 5,
+    width: 800,
+    height: 800,
+    tilesetName: "GENTLE_FOREST",
+    tiledTilesetName: "Gentle Forest",
+  },
+};
+
 export type TilemapData = {
   map: Phaser.Tilemaps.Tilemap;
   collideableLayers: Array<Phaser.Tilemaps.StaticTilemapLayer>;
@@ -9,6 +20,10 @@ export type TilemapData = {
 export type MapInfo = {
   name: string;
   totalItems: number;
+  width: number;
+  height: number;
+  tilesetName: string;
+  tiledTilesetName: string;
 };
 
 export function preloadTilemap(
@@ -28,14 +43,12 @@ export function preloadTilemap(
 
 export function createTilemap(
   scene: Phaser.Scene,
-  mapName: string,
-  tiledTilesetName: string,
-  loadedTilesetName: string
+  mapInfo: MapInfo
 ): TilemapData {
-  const map = scene.make.tilemap({ key: generateTilemapKey(mapName) });
+  const map = scene.make.tilemap({ key: generateTilemapKey(mapInfo.name) });
   const tileset = map.addTilesetImage(
-    tiledTilesetName,
-    generateTilesetKey(loadedTilesetName),
+    mapInfo.tiledTilesetName,
+    generateTilesetKey(mapInfo.tilesetName),
     16,
     16
   );
@@ -51,10 +64,10 @@ export function createTilemap(
 }
 
 export function getMapInfo(mapName: string): MapInfo {
-  const mapData: { [key: string]: MapInfo } = {
-    DEVMAP2: { name: "DEVMAP2", totalItems: 5 },
-  };
-  return mapData[mapName];
+  if (!(mapName in MAP_DATA)) {
+    throw new Error(`Map requested not found: ${mapName}`);
+  }
+  return MAP_DATA[mapName];
 }
 
 function generateTilesetKey(name: string): string {

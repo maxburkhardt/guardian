@@ -11,6 +11,7 @@ import {
   int16,
   int8,
 } from "@geckos.io/typed-array-buffer-schema";
+import { SERVER_FPS } from "../config/Server";
 
 export type GameData = {
   id: string;
@@ -121,7 +122,7 @@ const snapshotSchema = BufferSchema.schema("snapshot", {
 const snapshotModel = new Model(snapshotSchema);
 
 let gameStateCount = 0;
-const SI = new SnapshotInterpolation();
+const SI = new SnapshotInterpolation(SERVER_FPS);
 
 export function generateNewState(mapName: string): GameState {
   const thisGameId = gameStateCount;

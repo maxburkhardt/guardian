@@ -3,6 +3,11 @@ import WebFontFile from "../util/WebFontFile";
 import geckos from "@geckos.io/client";
 import { getCameraCenter } from "../util/SceneUtil";
 import { SIGNALS } from "../util/CommunicationSignals";
+import {
+  parseStateFromSnapshot,
+  decompressSnapshot,
+} from "../util/StateManagement";
+import { SERVER_PORT } from "../config/Server";
 
 export default class TitleScene extends Phaser.Scene {
   private text: Phaser.GameObjects.Text;
@@ -37,7 +42,7 @@ export default class TitleScene extends Phaser.Scene {
     this.scale.on("resize", this.recenter(this));
 
     // Set up communications
-    const channel = geckos({ port: 9090 });
+    const channel = geckos({ port: SERVER_PORT });
     channel.onConnect((error) => {
       if (error) {
         console.error(error.message);
@@ -45,8 +50,14 @@ export default class TitleScene extends Phaser.Scene {
       channel.on(SIGNALS.READY, () => {
         console.log("Successfully established connection with server.");
         channel.emit(SIGNALS.LOGIN, "foobar");
-        channel.on(SIGNALS.STATE_UPDATE, () => {
-          this.scene.start("RobberScene", { channel: channel });
+        channel.onRaw((data: ArrayBuffer) => {
+          const state = parseStateFromSnapshot(
+            decompressSnapshot(data as ArrayBuffer)
+          );
+          this.scene.start("RobberScene", {
+            channel: channel,
+            gameState: state,
+          });
         });
       });
     });

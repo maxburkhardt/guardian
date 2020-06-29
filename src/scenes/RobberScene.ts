@@ -1,17 +1,26 @@
 import * as Phaser from "phaser";
-import { preloadTilemap, createTilemap } from "../util/TilemapUtil";
+import {
+  preloadTilemap,
+  createTilemap,
+  MapInfo,
+  getMapInfo,
+} from "../util/TilemapUtil";
 import Robber, { preloadRobbers } from "../entities/Robber";
 import Guardian, { preloadGuardians } from "../entities/Guardian";
 import { ClientChannel } from "@geckos.io/client";
+import { GameState } from "../util/StateManagement";
 
 export type SceneArgs = {
   channel: ClientChannel;
+  gameState: GameState;
 };
 
 export default class RobberScene extends Phaser.Scene {
   private robber: Robber;
   private guardian1: Guardian;
   private channel: ClientChannel;
+  private gameState: GameState;
+  private mapInfo: MapInfo;
 
   constructor() {
     super({ key: "RobberScene" });
@@ -19,22 +28,19 @@ export default class RobberScene extends Phaser.Scene {
 
   public init(args: SceneArgs): void {
     this.channel = args.channel;
+    this.gameState = args.gameState;
+    this.mapInfo = getMapInfo(this.gameState.gameData[0].mapName.trim());
   }
 
   public preload(): void {
-    preloadTilemap(this, "GENTLE_FOREST", "DEVMAP2");
+    preloadTilemap(this, this.mapInfo.tilesetName, this.mapInfo.name);
     preloadRobbers(this);
     preloadGuardians(this);
   }
 
   public create(): void {
-    const mapData = createTilemap(
-      this,
-      "DEVMAP2",
-      "Gentle Forest",
-      "GENTLE_FOREST"
-    );
-    this.physics.world.setBounds(0, 0, 800, 800);
+    const mapData = createTilemap(this, this.mapInfo);
+    this.physics.world.setBounds(0, 0, this.mapInfo.width, this.mapInfo.height);
     this.robber = new Robber(
       this,
       400,

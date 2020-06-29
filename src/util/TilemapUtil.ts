@@ -1,10 +1,14 @@
 import * as Phaser from "phaser";
 import { getAssetPath } from "./AssetFinder";
-import { MapInfo } from "./StateManagement";
 
 export type TilemapData = {
   map: Phaser.Tilemaps.Tilemap;
   collideableLayers: Array<Phaser.Tilemaps.StaticTilemapLayer>;
+};
+
+export type MapInfo = {
+  name: string;
+  totalItems: number;
 };
 
 export function preloadTilemap(
@@ -48,7 +52,7 @@ export function createTilemap(
 
 export function getMapInfo(mapName: string): MapInfo {
   const mapData: { [key: string]: MapInfo } = {
-    DEVMAP2: { name: "DEVMAP2", numItems: 5 },
+    DEVMAP2: { name: "DEVMAP2", totalItems: 5 },
   };
   return mapData[mapName];
 }

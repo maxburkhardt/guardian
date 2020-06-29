@@ -1,106 +1,69 @@
 import {
   generateNewState,
-  prepareStateForSnapshot,
+  createSnapshot,
+  compressSnapshot,
+  decompressSnapshot,
+  parseStateFromSnapshot,
 } from "../../src/util/StateManagement";
+
+const complexState = {
+  gameData: [
+    { id: "g", mapName: "DEVMAP2", totalItems: 1, robberLives: 3, gameId: 1 },
+  ],
+  robbers: [
+    {
+      id: "\x00",
+      x: 30,
+      y: 60,
+      velocityX: 3,
+      velocityY: 0,
+      identity: "DISCORDIA",
+      invincible: 0,
+      itemsCarried: 0,
+    },
+  ],
+  guardians: [
+    {
+      id: "\x00",
+      x: 40,
+      y: 63,
+      velocityX: 0,
+      velocityY: 8,
+      identity: "GUARD1",
+      leaping: 0,
+    },
+    {
+      id: "\x01",
+      x: 50,
+      y: 62,
+      velocityX: 4,
+      velocityY: 4,
+      identity: "GUARD2",
+      leaping: 1,
+    },
+  ],
+  storage: [{ id: "\x00", x: 10, y: 100, opened: 0 }],
+  items: [{ id: "\x00", x: 5, y: 5, heldBy: -1, storedBy: 0 }],
+};
 
 test("state generation loads map data", () => {
   const gameState = generateNewState("DEVMAP2");
-  expect(gameState.map.name).toBe("DEVMAP2");
+  expect(gameState.gameData[0].mapName).toBe("DEVMAP2");
+  expect(gameState.gameData[0].totalItems).toBe(5);
 });
 
-test("proper transformation of new state", () => {
-  const gameState = {
-    id: 1,
-    map: { name: "DEVMAP2", numItems: 1 },
-    robbers: [],
-    guardians: [],
-    robberLives: 3,
-    storage: [],
-    items: [],
-  };
-  const transformed = prepareStateForSnapshot(gameState);
-  expect(transformed).toEqual(
-    expect.arrayContaining([
-      { id: "id", value: 1 },
-      { id: "robberLives", value: 3 },
-      { id: "map", name: "DEVMAP2", numItems: 1 },
-    ])
-  );
+test("snapshot creation on complex state", () => {
+  createSnapshot(complexState);
 });
 
-test("proper transformation of complex state", () => {
-  const gameState = {
-    id: 1,
-    map: { name: "DEVMAP2", numItems: 1 },
-    robbers: [
-      {
-        x: 30,
-        y: 60,
-        velocityX: 3,
-        velocityY: 0,
-        identity: "DISCORDIA",
-        invincible: false,
-        itemsCarried: 0,
-      },
-    ],
-    guardians: [
-      {
-        x: 40,
-        y: 63,
-        velocityX: 0,
-        velocityY: 8,
-        identity: "GUARD1",
-        leaping: false,
-      },
-      {
-        x: 50,
-        y: 62,
-        velocityX: 4,
-        velocityY: 4,
-        identity: "GUARD2",
-        leaping: true,
-      },
-    ],
-    robberLives: 3,
-    storage: [{ x: 10, y: 100, opened: false }],
-    items: [{ x: 5, y: 5, heldBy: -1, storedBy: 0 }],
-  };
-  const transformed = prepareStateForSnapshot(gameState);
-  expect(transformed).toEqual(
-    expect.arrayContaining([
-      { id: "id", value: 1 },
-      { id: "robberLives", value: 3 },
-      { id: "map", name: "DEVMAP2", numItems: 1 },
-      {
-        id: "robber_0",
-        x: 30,
-        y: 60,
-        velocityX: 3,
-        velocityY: 0,
-        identity: "DISCORDIA",
-        invincible: "false",
-        itemsCarried: 0,
-      },
-      {
-        id: "guardian_0",
-        x: 40,
-        y: 63,
-        velocityX: 0,
-        velocityY: 8,
-        identity: "GUARD1",
-        leaping: "false",
-      },
-      {
-        id: "guardian_1",
-        x: 50,
-        y: 62,
-        velocityX: 4,
-        velocityY: 4,
-        identity: "GUARD2",
-        leaping: "true",
-      },
-      { id: "storage_0", x: 10, y: 100, opened: "false" },
-      { id: "item_0", x: 5, y: 5, heldBy: -1, storedBy: 0 },
-    ])
+test("snapshot compression on complex state", () => {
+  const snap = createSnapshot(complexState);
+  const compressed = compressSnapshot(snap);
+  expect(compressed.byteLength < JSON.stringify(complexState).length).toBe(
+    true
   );
+  const decompressed = decompressSnapshot(compressed);
+  const parsed = parseStateFromSnapshot(decompressed);
+  expect(parsed.guardians[1].id).toBe("\x01");
+  expect(parsed.items[0].heldBy).toBe(-1);
 });

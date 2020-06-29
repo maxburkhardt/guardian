@@ -5,7 +5,8 @@ import * as http from "http";
 import * as compression from "compression";
 import ServerLobbyScene from "./scenes/ServerLobbyScene";
 import NetworkedGame from "./extensions/NetworkedGame";
-import { generateNewState } from "./util/StateManagement";
+import { generateNewState, createSnapshot } from "./util/StateManagement";
+import { Vault } from "@geckos.io/snapshot-interpolation";
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
   title: "Guardian Server",
@@ -15,6 +16,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   physics: { default: "arcade" },
+  fps: { target: 30 }, // TODO tune based on performance needs
   audio: { noAudio: true },
   parent: "game",
   scene: ServerLobbyScene,
@@ -24,7 +26,12 @@ const app = express();
 app.use(compression());
 const server = http.createServer(app);
 const SERVER_PORT = 9090;
-new NetworkedGame(gameConfig, server, generateNewState("DEVMAP2"));
+// Make a new game
+const newState = generateNewState("DEVMAP2");
+const stateVault = new Vault();
+const snap = createSnapshot(newState);
+stateVault.add(snap);
+new NetworkedGame(gameConfig, server, stateVault);
 
 app.get("/", (_, res) => {
   res.json({ hello: "there" });

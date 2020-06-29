@@ -2,6 +2,7 @@ import * as Phaser from "phaser";
 import WebFontFile from "../util/WebFontFile";
 import geckos from "@geckos.io/client";
 import { getCameraCenter } from "../util/SceneUtil";
+import { SIGNALS } from "../util/CommunicationSignals";
 
 export default class TitleScene extends Phaser.Scene {
   private text: Phaser.GameObjects.Text;
@@ -41,8 +42,12 @@ export default class TitleScene extends Phaser.Scene {
       if (error) {
         console.error(error.message);
       }
-      channel.on("ready", () => {
-        this.scene.start("RobberScene", { channel: channel });
+      channel.on(SIGNALS.READY, () => {
+        console.log("Successfully established connection with server.");
+        channel.emit(SIGNALS.LOGIN, "foobar");
+        channel.on(SIGNALS.STATE_UPDATE, () => {
+          this.scene.start("RobberScene", { channel: channel });
+        });
       });
     });
   }

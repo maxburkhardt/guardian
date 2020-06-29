@@ -1,17 +1,20 @@
 import * as http from "http";
-import { GameState } from "../util/StateManagement";
+import { ClientChannel } from "@geckos.io/client";
+import { Vault } from "@geckos.io/snapshot-interpolation";
 
 export default class NetworkedGame extends Phaser.Game {
   public server: http.Server;
-  public state: GameState;
+  public stateVault: Vault;
+  public channels: { [key: string]: ClientChannel };
 
   constructor(
     config: Phaser.Types.Core.GameConfig,
     server: http.Server,
-    state: GameState
+    stateVault: Vault
   ) {
     super(config);
     this.server = server;
-    this.state = state;
+    this.stateVault = stateVault;
+    this.channels = {};
   }
 }

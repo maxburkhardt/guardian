@@ -1,19 +1,20 @@
 import * as Phaser from "phaser";
 import WebFontFile from "../util/WebFontFile";
-import geckos from "@geckos.io/client";
+import geckos, { ClientChannel } from "@geckos.io/client";
 import { getCameraCenter } from "../util/SceneUtil";
 import { SIGNALS } from "../util/CommunicationSignals";
-import {
-  parseStateFromSnapshot,
-  decompressSnapshot,
-} from "../util/StateManagement";
 import { SERVER_PORT } from "../config/Server";
+import InputUtil from "../util/InputUtil";
 
-export default class TitleScene extends Phaser.Scene {
+export default class ConnectScene extends Phaser.Scene {
   private text: Phaser.GameObjects.Text;
+  private inputUtil: InputUtil;
+  private channel: ClientChannel;
+  private connected: boolean;
 
   constructor() {
     super({ key: "ConnectScene" });
+    this.connected = false;
   }
 
   public preload(): void {
@@ -40,26 +41,32 @@ export default class TitleScene extends Phaser.Scene {
       .text(center[0], center[1], "Connecting...", titleStyle)
       .setOrigin(0.5);
     this.scale.on("resize", this.recenter(this));
+    this.inputUtil = new InputUtil(this);
 
     // Set up communications
-    const channel = geckos({ port: SERVER_PORT });
-    channel.onConnect((error) => {
+    this.channel = geckos({ port: SERVER_PORT });
+    this.channel.onConnect((error) => {
       if (error) {
         console.error(error.message);
       }
-      channel.on(SIGNALS.READY, () => {
+      this.channel.on(SIGNALS.READY, () => {
         console.log("Successfully established connection with server.");
-        channel.emit(SIGNALS.LOGIN, "foobar");
-        channel.onRaw((data: ArrayBuffer) => {
-          const state = parseStateFromSnapshot(
-            decompressSnapshot(data as ArrayBuffer)
-          );
-          this.scene.start("RobberScene", {
-            channel: channel,
-            gameState: state,
-          });
-        });
+        this.channel.emit(SIGNALS.LOGIN, "foobar", { reliable: true });
+        this.text.setText("Connected!");
+        this.connected = true;
       });
     });
+  }
+
+  public update(): void {
+    if (this.inputUtil.continueIsDown() && this.connected) {
+      this.channel.on(SIGNALS.GAME_START_NOTIFICATION, (data: string) => {
+        this.scene.start("RobberScene", {
+          channel: this.channel,
+          mapName: data,
+        });
+      });
+      this.channel.emit(SIGNALS.GAME_START_REQUEST);
+    }
   }
 }

@@ -16,7 +16,7 @@ import { SERVER_FPS } from "../config/Server";
 export type GameData = {
   id: string;
   mapName: string;
-  totalItems: number;
+  itemsRemaining: number;
   robberLives: number;
   gameId: number;
 };
@@ -24,7 +24,7 @@ export type GameData = {
 const gameDataSchema = BufferSchema.schema("gameData", {
   id: { type: string8, length: 1 }, // "g"
   mapName: { type: string8, length: 12 },
-  totalItems: uint8,
+  itemsRemaining: uint8,
   robberLives: uint8,
   gameId: uint16,
 });
@@ -133,7 +133,7 @@ export function generateNewState(mapName: string): GameState {
       {
         id: "g",
         mapName: mapInfo.name,
-        totalItems: mapInfo.totalItems,
+        itemsRemaining: mapInfo.totalItems,
         robberLives: 3,
         gameId: thisGameId,
       },

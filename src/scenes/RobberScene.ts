@@ -8,19 +8,20 @@ import {
 import Robber, { preloadRobbers } from "../entities/Robber";
 import Guardian, { preloadGuardians } from "../entities/Guardian";
 import { ClientChannel } from "@geckos.io/client";
-import { GameState } from "../util/StateManagement";
+import { decompressSnapshot } from "../util/StateManagement";
+import { SnapshotInterpolation } from "@geckos.io/snapshot-interpolation";
+import { SERVER_FPS } from "../config/Server";
 
 export type SceneArgs = {
   channel: ClientChannel;
-  gameState: GameState;
+  mapName: string;
 };
 
 export default class RobberScene extends Phaser.Scene {
   private robber: Robber;
-  private guardian1: Guardian;
   private channel: ClientChannel;
-  private gameState: GameState;
   private mapInfo: MapInfo;
+  private SI: SnapshotInterpolation;
 
   constructor() {
     super({ key: "RobberScene" });
@@ -28,8 +29,8 @@ export default class RobberScene extends Phaser.Scene {
 
   public init(args: SceneArgs): void {
     this.channel = args.channel;
-    this.gameState = args.gameState;
-    this.mapInfo = getMapInfo(this.gameState.gameData[0].mapName.trim());
+    this.SI = new SnapshotInterpolation(SERVER_FPS);
+    this.mapInfo = getMapInfo(args.mapName);
   }
 
   public preload(): void {
@@ -48,20 +49,22 @@ export default class RobberScene extends Phaser.Scene {
       "DISCORDIA",
       mapData.collideableLayers
     );
-    this.guardian1 = new Guardian(
-      this,
-      200,
-      200,
-      "YZAZAMAEL",
-      mapData.collideableLayers
-    );
+    new Guardian(this, 200, 200, "YZAZAMAEL", mapData.collideableLayers);
 
+    // Set up camera
     const camera = this.cameras.main;
     camera.startFollow(this.robber);
     camera.setZoom(3);
+
+    // Configure callbacks for server communication
+    this.channel.onRaw((data: ArrayBuffer) =>
+      this.handleNewSnapshot(this.SI, data)
+    );
   }
 
   public update(): void {
+    // Compute values based on snapshot interpolation
+
     const cursorKeys = this.input.keyboard.createCursorKeys();
     let horzMovement = true;
     let vertMovement = true;
@@ -85,5 +88,12 @@ export default class RobberScene extends Phaser.Scene {
     if (!horzMovement && !vertMovement) {
       this.robber.idle();
     }
+  }
+
+  private handleNewSnapshot(
+    SI: SnapshotInterpolation,
+    data: ArrayBuffer
+  ): void {
+    SI.snapshot.add(decompressSnapshot(data));
   }
 }

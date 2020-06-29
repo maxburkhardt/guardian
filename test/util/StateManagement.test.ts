@@ -8,7 +8,13 @@ import {
 
 const complexState = {
   gameData: [
-    { id: "g", mapName: "DEVMAP2", totalItems: 1, robberLives: 3, gameId: 1 },
+    {
+      id: "g",
+      mapName: "DEVMAP2",
+      itemsRemaining: 1,
+      robberLives: 3,
+      gameId: 1,
+    },
   ],
   robbers: [
     {
@@ -49,7 +55,7 @@ const complexState = {
 test("state generation loads map data", () => {
   const gameState = generateNewState("DEVMAP2");
   expect(gameState.gameData[0].mapName).toBe("DEVMAP2");
-  expect(gameState.gameData[0].totalItems).toBe(5);
+  expect(gameState.gameData[0].itemsRemaining).toBe(5);
 });
 
 test("snapshot creation on complex state", () => {

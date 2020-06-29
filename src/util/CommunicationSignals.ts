@@ -1,6 +1,7 @@
 export const SIGNALS = {
   READY: "r",
   LOGIN: "l",
-  STATE_UPDATE: "s",
   INPUT: "i",
+  GAME_START_REQUEST: "s",
+  GAME_START_NOTIFICATION: "n",
 };

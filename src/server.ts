@@ -8,6 +8,7 @@ import NetworkedGame from "./extensions/NetworkedGame";
 import { generateNewState, createSnapshot } from "./util/StateManagement";
 import { Vault } from "@geckos.io/snapshot-interpolation";
 import { SERVER_FPS, SERVER_PORT } from "./config/Server";
+import ServerGameScene from "./scenes/ServerGameScene";
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
   title: "Guardian Server",
@@ -20,7 +21,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
   fps: { target: SERVER_FPS }, // TODO tune based on performance needs
   audio: { noAudio: true },
   parent: "game",
-  scene: ServerLobbyScene,
+  scene: [ServerLobbyScene, ServerGameScene],
 };
 
 const app = express();

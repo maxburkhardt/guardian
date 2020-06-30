@@ -1,6 +1,6 @@
 import * as Phaser from "phaser";
 import Character from "./Character";
-import { getAssetPath } from "../util/AssetFinder";
+import { getAssetPath } from "../util/assetFinder";
 
 export const ROBBER_SPRITE_KEYS = {
   DISCORDIA: "robber_discordia",

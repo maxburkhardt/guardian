@@ -4,13 +4,13 @@ import {
   createTilemap,
   MapInfo,
   getMapInfo,
-} from "../util/TilemapUtil";
+} from "../util/tilemapUtil";
 import Robber, { preloadRobbers } from "../entities/Robber";
 import Guardian, { preloadGuardians } from "../entities/Guardian";
 import { ClientChannel } from "@geckos.io/client";
-import { decompressSnapshot } from "../util/StateManagement";
+import { decompressSnapshot } from "../util/stateManagement";
 import { SnapshotInterpolation } from "@geckos.io/snapshot-interpolation";
-import { SERVER_FPS } from "../config/Server";
+import { SERVER_FPS } from "../config/server";
 
 export type SceneArgs = {
   channel: ClientChannel;

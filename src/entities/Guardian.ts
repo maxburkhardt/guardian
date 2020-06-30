@@ -1,6 +1,6 @@
 import * as Phaser from "phaser";
 import Character from "./Character";
-import { getAssetPath } from "../util/AssetFinder";
+import { getAssetPath } from "../util/assetFinder";
 
 export const GUARDIAN_SPRITE_KEYS = {
   YZAZAMAEL: "guardian_yzazamael",

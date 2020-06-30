@@ -2,10 +2,10 @@ import "@geckos.io/phaser-on-nodejs";
 import * as express from "express";
 import * as http from "http";
 import * as compression from "compression";
-import { SERVER_PORT } from "./config/Server";
+import { SERVER_PORT } from "./config/server";
 import generateGame from "./util/generateGame";
 import geckos, { iceServers, ServerChannel, Data } from "@geckos.io/server";
-import { SIGNALS } from "./util/CommunicationSignals";
+import { SIGNALS } from "./util/communicationSignals";
 
 const app = express();
 app.use(compression());

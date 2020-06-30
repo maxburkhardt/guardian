@@ -1,11 +1,11 @@
 import NetworkedScene from "../extensions/NetworkedScene";
-import { compressSnapshot } from "../util/StateManagement";
+import { compressSnapshot } from "../util/stateManagement";
 import {
   MapInfo,
   getMapInfo,
   preloadTilemap,
   createTilemap,
-} from "../util/TilemapUtil";
+} from "../util/tilemapUtil";
 import Robber, { preloadRobbers } from "../entities/Robber";
 import Guardian, { preloadGuardians } from "../entities/Guardian";
 import { CharacterChoices } from "./ServerLobbyScene";

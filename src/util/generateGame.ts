@@ -5,8 +5,8 @@ import * as http from "http";
 import ServerLobbyScene from "../scenes/ServerLobbyScene";
 import NetworkedGame from "../extensions/NetworkedGame";
 import ServerGameScene from "../scenes/ServerGameScene";
-import { SERVER_FPS } from "../config/Server";
-import { generateNewState, createSnapshot } from "./StateManagement";
+import { SERVER_FPS } from "../config/server";
+import { generateNewState, createSnapshot } from "./stateManagement";
 import { Vault } from "@geckos.io/snapshot-interpolation";
 
 export default function generateGame(server: http.Server): NetworkedGame {

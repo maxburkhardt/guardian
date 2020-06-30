@@ -1,7 +1,7 @@
 import * as Phaser from "phaser";
 import InputUtil from "../util/InputUtil";
 import WebFontFile from "../util/WebFontFile";
-import { getCameraCenter } from "../util/SceneUtil";
+import { getCameraCenter } from "../util/sceneUtil";
 
 export default class TitleScene extends Phaser.Scene {
   private inputUtil: InputUtil;

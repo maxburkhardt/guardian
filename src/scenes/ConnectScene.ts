@@ -1,9 +1,9 @@
 import * as Phaser from "phaser";
 import WebFontFile from "../util/WebFontFile";
 import geckos, { ClientChannel } from "@geckos.io/client";
-import { getCameraCenter } from "../util/SceneUtil";
-import { SIGNALS } from "../util/CommunicationSignals";
-import { SERVER_PORT } from "../config/Server";
+import { getCameraCenter } from "../util/sceneUtil";
+import { SIGNALS } from "../util/communicationSignals";
+import { SERVER_PORT } from "../config/server";
 import InputUtil from "../util/InputUtil";
 
 export default class ConnectScene extends Phaser.Scene {

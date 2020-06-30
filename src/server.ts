@@ -32,12 +32,18 @@ geckosServer.onConnection((channel: ServerChannel) => {
     games[game.entryCode] = game;
     console.log(`Created game with entry code ${game.entryCode}`);
     channel.join(game.entryCode);
-    channel.emit(SIGNALS.ENTER_LOBBY, undefined, { reliable: true });
+    channel.emit(SIGNALS.ENTER_LOBBY, game.entryCode, { reliable: true });
   });
   channel.on(SIGNALS.GAME_JOIN, (entryCode: string) => {
     console.log(`Got lobby join request with entry code ${entryCode}`);
-    channel.join(entryCode);
-    channel.emit(SIGNALS.ENTER_LOBBY, undefined, { reliable: true });
+    if (entryCode in games) {
+      channel.join(entryCode);
+      channel.emit(SIGNALS.ENTER_LOBBY, entryCode, { reliable: true });
+    } else {
+      console.warn(
+        `User requested to join game with entry code ${entryCode}, which was not found.`
+      );
+    }
   });
 });
 

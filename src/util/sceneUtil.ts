@@ -11,3 +11,16 @@ export function getPointRelativeToView(
   const yCenter = scene.game.scale.gameSize.height * yPercent;
   return [xCenter, yCenter];
 }
+
+export const titleStyle: Phaser.Types.GameObjects.Text.TextStyle = {
+  fontFamily: "Metamorphous",
+  fontSize: "64px",
+  color: "#fff",
+  align: "center",
+};
+export const buttonStyle: Phaser.Types.GameObjects.Text.TextStyle = {
+  fontFamily: "Metamorphous",
+  fontSize: "36px",
+  color: "#fff",
+  align: "center",
+};

@@ -1,7 +1,10 @@
 import * as Phaser from "phaser";
-import InputUtil from "../util/InputUtil";
 import WebFontFile from "../util/WebFontFile";
-import { getPointRelativeToView } from "../util/sceneUtil";
+import {
+  getPointRelativeToView,
+  titleStyle,
+  buttonStyle,
+} from "../util/sceneUtil";
 import { ClientChannel } from "@geckos.io/client";
 import { SIGNALS } from "../util/communicationSignals";
 
@@ -10,7 +13,6 @@ export type TitleSceneArgs = {
 };
 
 export default class TitleScene extends Phaser.Scene {
-  private inputUtil: InputUtil;
   private titleText: Phaser.GameObjects.Text;
   private newGameText: Phaser.GameObjects.Text;
   private entryCodeInput: Phaser.GameObjects.Text;
@@ -50,19 +52,6 @@ export default class TitleScene extends Phaser.Scene {
   }
 
   public create(): void {
-    this.inputUtil = new InputUtil(this);
-    const titleStyle: Phaser.Types.GameObjects.Text.TextStyle = {
-      fontFamily: "Metamorphous",
-      fontSize: "64px",
-      color: "#fff",
-      align: "center",
-    };
-    const buttonStyle: Phaser.Types.GameObjects.Text.TextStyle = {
-      fontFamily: "Metamorphous",
-      fontSize: "36px",
-      color: "#fff",
-      align: "center",
-    };
     this.titleText = this.add
       .text(0, 0, "Guardians", titleStyle)
       .setOrigin(0.5);
@@ -78,6 +67,9 @@ export default class TitleScene extends Phaser.Scene {
       })
       .on("pointerup", () => {
         this.channel.emit(SIGNALS.GAME_CREATE, undefined, { reliable: true });
+        this.channel.on(SIGNALS.ENTER_LOBBY, (entryCode: string) => {
+          this.transitionToLobby(entryCode);
+        });
       });
     this.entryCodeBox = this.add.rectangle(0, 0, 0, 0, 0x666666);
     this.entryCodeInput = this.add
@@ -101,8 +93,19 @@ export default class TitleScene extends Phaser.Scene {
         this.channel.emit(SIGNALS.GAME_JOIN, this.entryCodeInput.text, {
           reliable: true,
         });
+        this.channel.on(SIGNALS.ENTER_LOBBY, (entryCode: string) => {
+          this.transitionToLobby(entryCode);
+        });
       });
     this.positionElements(this)();
     this.scale.on("resize", this.positionElements(this));
+  }
+
+  private transitionToLobby(entryCode: string): void {
+    this.scale.removeAllListeners();
+    this.scene.start("ClientLobbyScene", {
+      channel: this.channel,
+      entryCode: entryCode,
+    });
   }
 }

@@ -1,6 +1,13 @@
 export function getCameraCenter(scene: Phaser.Scene): [number, number] {
-  const xCenter = scene.cameras.main.worldView.x + scene.cameras.main.width / 2;
-  const yCenter =
-    scene.cameras.main.worldView.y + scene.cameras.main.height / 2;
+  return getPointRelativeToView(scene, 0.5, 0.5);
+}
+
+export function getPointRelativeToView(
+  scene: Phaser.Scene,
+  xPercent: number,
+  yPercent: number
+): [number, number] {
+  const xCenter = scene.game.scale.gameSize.width * xPercent;
+  const yCenter = scene.game.scale.gameSize.height * yPercent;
   return [xCenter, yCenter];
 }

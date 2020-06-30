@@ -54,6 +54,7 @@
     "compression": "^1.7.4",
     "express": "^4.17.1",
     "phaser": "^3.23.0",
+    "phaser3-rex-plugins": "^1.1.19",
     "webfontloader": "^1.6.28"
   }
 }

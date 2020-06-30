@@ -4,17 +4,13 @@ import geckos, { ClientChannel } from "@geckos.io/client";
 import { getCameraCenter } from "../util/sceneUtil";
 import { SIGNALS } from "../util/communicationSignals";
 import { SERVER_PORT } from "../config/server";
-import InputUtil from "../util/InputUtil";
 
 export default class ConnectScene extends Phaser.Scene {
   private text: Phaser.GameObjects.Text;
-  private inputUtil: InputUtil;
   private channel: ClientChannel;
-  private connected: boolean;
 
   constructor() {
     super({ key: "ConnectScene" });
-    this.connected = false;
   }
 
   public preload(): void {
@@ -41,7 +37,6 @@ export default class ConnectScene extends Phaser.Scene {
       .text(center[0], center[1], "Connecting...", titleStyle)
       .setOrigin(0.5);
     this.scale.on("resize", this.recenter(this));
-    this.inputUtil = new InputUtil(this);
 
     // Set up communications
     this.channel = geckos({ port: SERVER_PORT, authorization: "foobar" });
@@ -51,13 +46,16 @@ export default class ConnectScene extends Phaser.Scene {
       }
       this.channel.on(SIGNALS.READY, () => {
         console.log("Successfully established connection with server.");
-        this.text.setText("Connected!");
-        this.connected = true;
+        this.scale.removeAllListeners();
+        this.scene.start("TitleScene", {
+          channel: this.channel,
+        });
       });
     });
   }
 
   public update(): void {
+    /*
     if (this.inputUtil.continueIsDown() && this.connected) {
       this.channel.on(SIGNALS.GAME_START_NOTIFICATION, (data: string) => {
         this.scene.start("RobberScene", {
@@ -67,5 +65,6 @@ export default class ConnectScene extends Phaser.Scene {
       });
       this.channel.emit(SIGNALS.GAME_START_REQUEST);
     }
+    */
   }
 }

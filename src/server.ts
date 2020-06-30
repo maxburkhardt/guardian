@@ -35,6 +35,7 @@ geckosServer.onConnection((channel: ServerChannel) => {
     channel.emit(SIGNALS.ENTER_LOBBY, undefined, { reliable: true });
   });
   channel.on(SIGNALS.GAME_JOIN, (entryCode: string) => {
+    console.log(`Got lobby join request with entry code ${entryCode}`);
     channel.join(entryCode);
     channel.emit(SIGNALS.ENTER_LOBBY, undefined, { reliable: true });
   });

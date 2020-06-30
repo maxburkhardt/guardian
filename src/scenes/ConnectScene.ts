@@ -44,14 +44,13 @@ export default class ConnectScene extends Phaser.Scene {
     this.inputUtil = new InputUtil(this);
 
     // Set up communications
-    this.channel = geckos({ port: SERVER_PORT });
-    this.channel.onConnect((error) => {
+    this.channel = geckos({ port: SERVER_PORT, authorization: "foobar" });
+    this.channel.onConnect((error: Error) => {
       if (error) {
         console.error(error.message);
       }
       this.channel.on(SIGNALS.READY, () => {
         console.log("Successfully established connection with server.");
-        this.channel.emit(SIGNALS.LOGIN, "foobar", { reliable: true });
         this.text.setText("Connected!");
         this.connected = true;
       });

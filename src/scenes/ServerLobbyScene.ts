@@ -1,60 +1,41 @@
-import geckos, {
-  iceServers,
-  GeckosServer,
-  ServerChannel,
-} from "@geckos.io/server";
+import { ServerChannel } from "@geckos.io/server";
 import NetworkedScene from "../extensions/NetworkedScene";
-import { SIGNALS } from "../util/CommunicationSignals";
-import { Data } from "@geckos.io/client";
 
 export type CharacterChoices = {
   [key: string]: { type: string; name: string };
 };
 
+export type LobbyArgs = {
+  channel: ServerChannel;
+};
+
 export default class ServerLobbyScene extends NetworkedScene {
-  private geckosServer: GeckosServer;
   private mapChoice: string;
   private characterChoices: CharacterChoices;
+  private channel: ServerChannel;
 
   constructor() {
     super({ key: "ServerLobbyScene" });
   }
 
-  public init(): void {
-    this.geckosServer = geckos({
-      iceServers: process.env.NODE_ENV === "production" ? iceServers : [],
-    });
-    this.geckosServer.addServer(this.game.server);
+  public init(args: LobbyArgs): void {
     // TODO: this is all hardcoded for now, will eventually be selectable
     this.mapChoice = "DEVMAP2";
     this.characterChoices = { foobar: { type: "robber", name: "DISCORDIA" } };
+    this.channel = args.channel;
   }
 
   public create(): void {
-    this.geckosServer.onConnection((channel: ServerChannel) => {
-      console.log(`Got a client connection with ID ${channel.id}`);
-      let sessionId: string | undefined = undefined;
-      channel.join(this.game.gameId);
-      channel.emit(SIGNALS.READY, undefined, { reliable: true });
-      channel.on(SIGNALS.LOGIN, (data: Data) => {
-        if (typeof data === "string") {
-          this.game.channels[data] = channel;
-          sessionId = data;
-          console.log(`Authenticated a channel with session ID ${data}`);
-        } else {
-          console.warn(
-            `Unexpected data type found for login message: ${typeof data}`
-          );
-        }
-      });
-      channel.on(SIGNALS.GAME_START_REQUEST, () => {
-        console.log(`Received game start request from session ${sessionId}`);
-        channel.room.emit(SIGNALS.GAME_START_NOTIFICATION, this.mapChoice);
-        this.scene.start("ServerGameScene", {
-          mapName: this.mapChoice,
-          characterChoices: this.characterChoices,
-        });
-      });
+    //this.channel.join(this.game.gameId);
+    /*
+    this.channel.on(SIGNALS.GAME_START_REQUEST, () => {
+      console.log(`Received game start request from session ${sessionId}`);
+      //this.channel.room.emit(SIGNALS.GAME_START_NOTIFICATION, this.mapChoice);
+    });
+      */
+    this.scene.start("ServerGameScene", {
+      mapName: this.mapChoice,
+      characterChoices: this.characterChoices,
     });
   }
 }

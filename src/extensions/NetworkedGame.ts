@@ -6,18 +6,19 @@ export default class NetworkedGame extends Phaser.Game {
   public server: http.Server;
   public stateVault: Vault;
   public channels: { [key: string]: ServerChannel };
-  public gameId: string;
+  public entryCode: string;
 
   constructor(
     config: Phaser.Types.Core.GameConfig,
     server: http.Server,
-    stateVault: Vault
+    stateVault: Vault,
+    entryCode: string
   ) {
     super(config);
     this.server = server;
     this.stateVault = stateVault;
     this.channels = {};
     // TODO randomly generate
-    this.gameId = "TEST";
+    this.entryCode = entryCode;
   }
 }

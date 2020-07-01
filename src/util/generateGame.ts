@@ -3,13 +3,16 @@ import * as Phaser from "phaser";
 import * as nodeCrypto from "crypto";
 import * as http from "http";
 import ServerLobbyScene from "../scenes/ServerLobbyScene";
-import NetworkedGame from "../extensions/NetworkedGame";
 import ServerGameScene from "../scenes/ServerGameScene";
 import { SERVER_FPS } from "../config/server";
 import { generateNewState, createSnapshot } from "./stateManagement";
 import { Vault } from "@geckos.io/snapshot-interpolation";
 
-export default function generateGame(server: http.Server): NetworkedGame {
+export default function generateGame(server: http.Server): Phaser.Game {
+  const newState = generateNewState("DEVMAP2");
+  const stateVault = new Vault();
+  const snap = createSnapshot(newState);
+  stateVault.add(snap);
   const gameConfig: Phaser.Types.Core.GameConfig = {
     title: "Guardian Server",
     type: Phaser.HEADLESS,
@@ -23,15 +26,21 @@ export default function generateGame(server: http.Server): NetworkedGame {
     audio: { noAudio: true },
     parent: "game",
     scene: [ServerLobbyScene, ServerGameScene],
+    callbacks: {
+      preBoot: (prebootGame: Phaser.Game) => {
+        prebootGame.registry.merge({
+          server: server,
+          stateVault: stateVault,
+          entryCode: getRandomGameId(),
+          channels: {},
+        });
+      },
+    },
   };
-  const newState = generateNewState("DEVMAP2");
-  const stateVault = new Vault();
-  const snap = createSnapshot(newState);
-  stateVault.add(snap);
-  return new NetworkedGame(gameConfig, server, stateVault, getRandomGameId());
+  return new Phaser.Game(gameConfig);
 }
 
-export function getRandomGameId(): string {
+function getRandomGameId(): string {
   let result = "";
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const availableCount = characters.length;

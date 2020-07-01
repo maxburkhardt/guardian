@@ -1,15 +1,11 @@
 import { ServerChannel } from "@geckos.io/server";
-import NetworkedScene from "../extensions/NetworkedScene";
+import { SIGNALS } from "../util/communicationSignals";
 
 export type CharacterChoices = {
   [key: string]: { type: string; name: string };
 };
 
-export type LobbyArgs = {
-  channel: ServerChannel;
-};
-
-export default class ServerLobbyScene extends NetworkedScene {
+export default class ServerLobbyScene extends Phaser.Scene {
   private mapChoice: string;
   private characterChoices: CharacterChoices;
   private channel: ServerChannel;
@@ -18,24 +14,28 @@ export default class ServerLobbyScene extends NetworkedScene {
     super({ key: "ServerLobbyScene" });
   }
 
-  public init(args: LobbyArgs): void {
+  public init(): void {
     // TODO: this is all hardcoded for now, will eventually be selectable
     this.mapChoice = "DEVMAP2";
     this.characterChoices = { foobar: { type: "robber", name: "DISCORDIA" } };
-    this.channel = args.channel;
   }
 
   public create(): void {
-    //this.channel.join(this.game.gameId);
-    /*
-    this.channel.on(SIGNALS.GAME_START_REQUEST, () => {
-      console.log(`Received game start request from session ${sessionId}`);
-      //this.channel.room.emit(SIGNALS.GAME_START_NOTIFICATION, this.mapChoice);
-    });
-      */
-    this.scene.start("ServerGameScene", {
-      mapName: this.mapChoice,
-      characterChoices: this.characterChoices,
+    this.sys.registry.events.on("changedata", () => {
+      for (const [, channel] of Object.entries(
+        this.sys.registry.get("channels")
+      ) as Array<[string, ServerChannel]>) {
+        channel.on(SIGNALS.GAME_START_REQUEST, () => {
+          console.log(
+            `Received game start request from session ${channel.userData.sessionId}`
+          );
+          channel.room.emit(SIGNALS.GAME_START_NOTIFICATION, this.mapChoice);
+          this.scene.start("ServerGameScene", {
+            mapName: this.mapChoice,
+            characterChoices: this.characterChoices,
+          });
+        });
+      }
     });
   }
 }

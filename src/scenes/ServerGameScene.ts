@@ -1,4 +1,3 @@
-import NetworkedScene from "../extensions/NetworkedScene";
 import { compressSnapshot } from "../util/stateManagement";
 import {
   MapInfo,
@@ -9,13 +8,14 @@ import {
 import Robber, { preloadRobbers } from "../entities/Robber";
 import Guardian, { preloadGuardians } from "../entities/Guardian";
 import { CharacterChoices } from "./ServerLobbyScene";
+import { ServerChannel } from "@geckos.io/server";
 
 export type GameConfiguration = {
   mapName: string;
   characterChoices: CharacterChoices;
 };
 
-export default class ServerGameScene extends NetworkedScene {
+export default class ServerGameScene extends Phaser.Scene {
   private mapInfo: MapInfo;
   private characterChoices: CharacterChoices;
   private guardians: Array<Guardian>;
@@ -36,6 +36,11 @@ export default class ServerGameScene extends NetworkedScene {
     preloadTilemap(this, this.mapInfo.tilesetName, this.mapInfo.name);
     preloadRobbers(this);
     preloadGuardians(this);
+    console.log(
+      `Server game scene preloaded for game ${this.sys.registry.get(
+        "entryCode"
+      )}`
+    );
   }
 
   public create(): void {
@@ -57,8 +62,11 @@ export default class ServerGameScene extends NetworkedScene {
   }
 
   public update(): void {
-    for (const [, channel] of Object.entries(this.game.channels)) {
-      channel.raw.emit(compressSnapshot(this.game.stateVault.get()));
-    }
+    const channel = Object.values(
+      this.sys.registry.get("channels")
+    )[0] as ServerChannel;
+    channel.raw.room.emit(
+      compressSnapshot(this.sys.registry.get("stateVault").get())
+    );
   }
 }

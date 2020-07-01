@@ -53,18 +53,4 @@ export default class ConnectScene extends Phaser.Scene {
       });
     });
   }
-
-  public update(): void {
-    /*
-    if (this.inputUtil.continueIsDown() && this.connected) {
-      this.channel.on(SIGNALS.GAME_START_NOTIFICATION, (data: string) => {
-        this.scene.start("RobberScene", {
-          channel: this.channel,
-          mapName: data,
-        });
-      });
-      this.channel.emit(SIGNALS.GAME_START_REQUEST);
-    }
-    */
-  }
 }

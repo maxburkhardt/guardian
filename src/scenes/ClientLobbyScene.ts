@@ -5,6 +5,7 @@ import {
   getPointRelativeToView,
   buttonStyle,
 } from "../util/sceneUtil";
+import { SIGNALS } from "../util/communicationSignals";
 
 export type ClientLobbySceneArgs = {
   channel: ClientChannel;
@@ -16,6 +17,7 @@ export default class ClientLobbyScene extends Phaser.Scene {
   private entryCode: string;
   private headerText: Phaser.GameObjects.Text;
   private entryCodeText: Phaser.GameObjects.Text;
+  private startText: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "ClientLobbyScene" });
@@ -27,6 +29,7 @@ export default class ClientLobbyScene extends Phaser.Scene {
       this.entryCodeText.setPosition(
         ...getPointRelativeToView(scene, 0.5, 0.2)
       );
+      this.startText.setPosition(...getPointRelativeToView(scene, 0.5, 0.5));
     };
   }
 
@@ -36,12 +39,27 @@ export default class ClientLobbyScene extends Phaser.Scene {
   }
 
   public create(): void {
+    this.channel.on(SIGNALS.GAME_START_NOTIFICATION, (data: string) => {
+      this.scene.start("RobberScene", {
+        channel: this.channel,
+        mapName: data,
+      });
+    });
     this.headerText = this.add
       .text(0, 0, "Guardian Lobby", titleStyle)
       .setOrigin(0.5);
     this.entryCodeText = this.add
       .text(0, 0, `Entry Code: ${this.entryCode}`, buttonStyle)
       .setOrigin(0.5);
+    this.startText = this.add
+      .text(0, 0, "Start Game", buttonStyle)
+      .setOrigin(0.5)
+      .setInteractive({ useHandCursor: true })
+      .on("pointerup", () => {
+        this.channel.emit(SIGNALS.GAME_START_REQUEST, undefined, {
+          reliable: true,
+        });
+      });
     this.positionElements(this)();
     this.scale.on("resize", this.positionElements(this));
   }

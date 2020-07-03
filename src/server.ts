@@ -18,6 +18,7 @@ const geckosServer = geckos({
   authorization: async (header: string) => {
     return { sessionId: header };
   },
+  cors: { allowAuthorization: true, origin: "http://localhost:8080" }
 });
 geckosServer.addServer(server);
 geckosServer.onConnection((channel: ServerChannel) => {
